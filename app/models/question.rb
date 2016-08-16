@@ -19,4 +19,6 @@ class Question < ActiveRecord::Base
   has_many :answer_choices
 
   belongs_to :poll
+
+  has_many :responses, through: :answer_choices, source: :responses
 end
