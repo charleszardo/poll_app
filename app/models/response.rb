@@ -18,7 +18,21 @@ class Response < ActiveRecord::Base
 
   has_one :question, through: :answer_choice
 
+  validate :respondent_has_not_already_answered_question
+
   def sibling_responses
     self.question.responses.where.not(id: self.id)
+  end
+
+  private
+
+  def respondent_already_answered?
+    sibling_responses.exists?(user_id: self.user_id)
+  end
+
+  def respondent_has_not_already_answered_question
+    if respondent_already_answered?
+      errors[:respondent_id] << "cannot vote twice for question"
+    end
   end
 end
