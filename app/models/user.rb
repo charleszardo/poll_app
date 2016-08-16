@@ -7,6 +7,10 @@
 #  created_at :datetime
 #  updated_at :datetime
 #
+# Indexes
+#
+#  index_users_on_user_name  (user_name)
+#
 
 class User < ActiveRecord::Base
   validates :user_name, :presence => true, :uniqueness => true
