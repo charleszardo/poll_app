@@ -19,6 +19,7 @@ class Response < ActiveRecord::Base
   has_one :question, through: :answer_choice
 
   validate :respondent_has_not_already_answered_question
+  validate :respondent_is_not_poll_author
 
   def sibling_responses
     self.question.responses.where.not(id: self.id)
@@ -33,6 +34,12 @@ class Response < ActiveRecord::Base
   def respondent_has_not_already_answered_question
     if respondent_already_answered?
       errors[:respondent_id] << "cannot vote twice for question"
+    end
+  end
+
+  def respondent_is_not_poll_author
+    if answer_choice.question.poll.author == respondent
+      errors[:respondent_id] << "cannot respond to your own poll"
     end
   end
 end
