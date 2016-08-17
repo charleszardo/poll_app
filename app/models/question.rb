@@ -21,4 +21,12 @@ class Question < ActiveRecord::Base
   belongs_to :poll
 
   has_many :responses, through: :answer_choices, source: :responses
+
+  def results
+    results = {}
+    answer_choices.includes(:responses).each do |ac|
+      results[ac.text] = ac.responses.length
+    end
+    results
+  end
 end
