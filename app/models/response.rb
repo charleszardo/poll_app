@@ -38,26 +38,13 @@ class Response < ActiveRecord::Base
   end
 
   def respondent_is_not_poll_author
-    users = User.find_by_sql(<<-SQL)
-      SELECT
-        *
-      FROM
-        answer_choices
-      JOIN
-        questions
-      ON
-        answer_choices.question_id = questions.id
-      JOIN
-        polls
-      ON
-        questions.poll_id = polls.id
-      WHERE
-        polls.author_id = #{self.user_id}
-      AND
-        answer_choices.id = #{self.answer_id}
-    SQL
+    poll_author_id = Poll
+      .joins(questions: :answer_choices)
+      .where("answer_choices.id = ?", self.answer_id)
+      .pluck("polls.author_id")
+      .first
 
-    if users.length > 0
+    if poll_author_id == self.user_id
       errors[:respondent_id] << "cannot respond to your own poll"
     end
   end
