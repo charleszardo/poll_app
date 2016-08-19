@@ -25,7 +25,7 @@ class Response < ActiveRecord::Base
     self.question.responses.where.not(id: self.id)
   end
 
-  # private
+  private
 
   def respondent_already_answered?
     sibling_responses.exists?(user_id: self.user_id)
