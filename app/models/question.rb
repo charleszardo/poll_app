@@ -16,7 +16,7 @@
 class Question < ActiveRecord::Base
   validates :text, :poll_id, :presence => true
 
-  has_many :answer_choices
+  has_many :answer_choices, dependent: :destroy
 
   belongs_to :poll
 

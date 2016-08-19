@@ -15,9 +15,9 @@
 class User < ActiveRecord::Base
   validates :user_name, :presence => true, :uniqueness => true
 
-  has_many :authored_polls, class_name: "Poll", foreign_key: :author_id, primary_key: :id
+  has_many :authored_polls, class_name: "Poll", foreign_key: :author_id, primary_key: :id, dependent: :destroy
 
-  has_many :responses
+  has_many :responses, dependent: :destroy
 
   def completed_polls
     polls = Poll.find_by_sql([<<-SQL, id])
