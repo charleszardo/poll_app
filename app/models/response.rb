@@ -25,7 +25,7 @@ class Response < ActiveRecord::Base
     self.question.responses.where.not(id: self.id)
   end
 
-  private
+  # private
 
   def respondent_already_answered?
     sibling_responses.exists?(user_id: self.user_id)
@@ -38,7 +38,26 @@ class Response < ActiveRecord::Base
   end
 
   def respondent_is_not_poll_author
-    if answer_choice.question.poll.author == respondent
+    users = User.find_by_sql(<<-SQL)
+      SELECT
+        *
+      FROM
+        answer_choices
+      JOIN
+        questions
+      ON
+        answer_choices.question_id = questions.id
+      JOIN
+        polls
+      ON
+        questions.poll_id = polls.id
+      WHERE
+        polls.author_id = #{self.user_id}
+      AND
+        answer_choices.id = #{self.answer_id}
+    SQL
+
+    if users.length > 0
       errors[:respondent_id] << "cannot respond to your own poll"
     end
   end
