@@ -56,6 +56,12 @@ class User < ActiveRecord::Base
       .having('COUNT(responses.id) = COUNT(DISTINCT questions.id)')
   end
 
+  def incomplete_polls
+    polls_with_completion_counts
+      .having('COUNT(responses.id) < COUNT(DISTINCT questions.id)')
+      .having('COUNT(responses.id) > 0')
+  end
+
   private
   def polls_with_completion_counts
     joins_sql = <<-SQL
