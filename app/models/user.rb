@@ -50,4 +50,27 @@ class User < ActiveRecord::Base
       p poll.q_count
     end
   end
+
+  def completed_polls
+    polls_with_completion_counts
+      .having('COUNT(responses.id) = COUNT(DISTINCT questions.id)')
+  end
+
+  private
+  def polls_with_completion_counts
+    joins_sql = <<-SQL
+      LEFT OUTER JOIN (
+        SELECT
+          *
+        FROM
+          responses
+        WHERE
+          user_id = #{self.id}
+      ) AS responses ON answer_chocies.id = responses.answer_id
+    SQL
+
+    Poll.joins(questions: :answer_choices)
+      .joins(joins_sql)
+      .group('polls.id')
+  end
 end
