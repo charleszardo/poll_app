@@ -21,13 +21,19 @@ class User < ActiveRecord::Base
 
   def completed_polls
     polls_with_completion_counts
-      .having('COUNT(responses.id) = COUNT(DISTINCT questions.id)')
+      .having("COUNT(responses.id) = COUNT(DISTINCT questions.id)")
   end
 
   def incomplete_polls
     polls_with_completion_counts
-      .having('COUNT(responses.id) < COUNT(DISTINCT questions.id)')
-      .having('COUNT(responses.id) > 0')
+      .having("COUNT(responses.id) < COUNT(DISTINCT questions.id)")
+      .having("COUNT(responses.id) > 0")
+  end
+
+  def uninitialized_polls
+    polls_with_completion_counts
+      .having("COUNT(DISTINCT questions.id) > 0")
+      .having("COUNT(responses.id) = 0")
   end
 
   private
@@ -45,6 +51,6 @@ class User < ActiveRecord::Base
 
     Poll.joins(questions: :answer_choices)
       .joins(joins_sql)
-      .group('polls.id')
+      .group("polls.id")
   end
 end
