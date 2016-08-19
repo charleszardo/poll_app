@@ -27,9 +27,23 @@ class User < ActiveRecord::Base
         polls
       JOIN
         questions ON questions.poll_id = polls.id
+      JOIN
+        answer_choices ON answer_choices.question_id = questions.id
+      LEFT OUTER JOIN
+        (SELECT
+          *
+         FROM
+          responses
+        WHERE
+          user_id = ?
+        ) AS responses ON responses.answer_id = answer_choices.id
       GROUP BY
         polls.id
+      HAVING
+        COUNT(responses.id) = COUNT(DISTINCT questions.id)
     SQL
+
+    p polls
 
     polls.each do |poll|
       p poll.title
