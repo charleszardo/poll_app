@@ -1,15 +1,15 @@
 == Poll App
 
-= Requirements
+=== Requirements
 * ruby >= 2.0.0
 * postgresql
 
-= To Run
+=== To Run
 * install necessary gems using `bundle install`
 * start up postgresql locally
 * seed database with `rake db:seed`
 
-= Features
+=== Features
 * User, Poll, Question, AnswerChoice, and Response models
 * helpful methods offering insight pertaining to created polls
 * custom validations
