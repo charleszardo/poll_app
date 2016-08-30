@@ -6,7 +6,7 @@
 * postgresql
 
 === To Run
-* install necessary gems using +bundle install+
+* install necessary gems using <tt>bundle install</tt>
 * start up postgresql locally
 * seed database with +rake db:seed+
 
